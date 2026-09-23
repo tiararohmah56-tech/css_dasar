@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul Digital Interaktif: Menguasai CSS</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    .code-editor {
+      tab-size: 2;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-hidden bg-slate-950 text-slate-100">
+
+  <!-- Header Navigation Bar -->
+  <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md px-4 lg:px-8 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-3">
+      <button id="mobileMenuBtn" class="lg:hidden text-slate-400 hover:text-white p-2">
+        <i class="fa-solid fa-bars text-xl"></i>
+      </button>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <i class="fa-brands fa-css3-alt text-2xl text-white"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-base md:text-lg leading-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+          Modul Digital CSS
+        </h1>
+        <p class="text-xs text-indigo-400/80 font-medium hidden sm:block">Pembelajaran Interaktif & Live Playground</p>
+      </div>
+    </div>
+
+    <!-- Progress Indicator -->
+    <div class="flex items-center gap-4">
+      <div class="hidden md:flex items-center gap-3 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60">
+        <span class="text-xs text-slate-400 font-medium">Progres Modul:</span>
+        <div class="w-28 bg-slate-700 h-2 rounded-full overflow-hidden">
+          <div id="progressBar" class="bg-gradient-to-r from-indigo-500 to-emerald-400 h-full w-0 transition-all duration-500"></div>
+        </div>
+        <span id="progressText" class="text-xs font-bold text-indigo-300">0%</span>
+      </div>
+
+      <button id="toggleSandboxHeaderBtn" onclick="switchTab('sandbox')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition shadow-lg shadow-indigo-600/20">
+        <i class="fa-solid fa-code"></i>
+        <span>Live Sandbox</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="absolute lg:relative inset-y-0 left-0 w-72 bg-slate-900 border-r border-slate-800 flex flex-col z-20 transition-transform duration-300 -translate-x-full lg:translate-x-0">
+      <div class="p-4 border-b border-slate-800/80 flex items-center justify-between">
+        <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Daftar Materi</span>
+        <button id="closeSidebarBtn" class="lg:hidden text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+        <button onclick="switchTab('roadmap')" id="nav-roadmap" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition bg-indigo-600/20 text-indigo-300 border border-indigo-500/30">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-map text-indigo-400 w-5"></i>
+            <span>Roadmap & Pengantar</span>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+        </button>
+
+        <button onclick="switchTab('modul1')" id="nav-modul1" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-cubes text-slate-400 w-5"></i>
+            <span>Modul 1: Fondasi CSS</span>
+          </div>
+          <span id="badge-modul1" class="w-2 h-2 rounded-full bg-slate-600"></span>
+        </button>
+
+        <button onclick="switchTab('modul2')" id="nav-modul2" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-palette text-slate-400 w-5"></i>
+            <span>Modul 2: Box Model & Visual</span>
+          </div>
+          <span id="badge-modul2" class="w-2 h-2 rounded-full bg-slate-600"></span>
+        </button>
+
+        <button onclick="switchTab('modul3')" id="nav-modul3" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-table-cells-large text-slate-400 w-5"></i>
+            <span>Modul 3: Flexbox & Grid</span>
+          </div>
+          <span id="badge-modul3" class="w-2 h-2 rounded-full bg-slate-600"></span>
+        </button>
+
+        <button onclick="switchTab('modul4')" id="nav-modul4" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-mobile-screen-button text-slate-400 w-5"></i>
+            <span>Modul 4: Responsif & Animasi</span>
+          </div>
+          <span id="badge-modul4" class="w-2 h-2 rounded-full bg-slate-600"></span>
+        </button>
+
+        <div class="pt-4 pb-1">
+          <div class="border-t border-slate-800 my-1"></div>
+          <span class="text-[10px] font-semibold tracking-wider text-slate-500 uppercase px-3">Praktikum & Laboratorium</span>
+        </div>
+
+        <button onclick="switchTab('visualizers')" id="nav-visualizers" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-sliders text-amber-400 w-5"></i>
+            <span>Lab Box Model & Flexbox</span>
+          </div>
+        </button>
+
+        <button onclick="switchTab('praktikum')" id="nav-praktikum" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-laptop-code text-cyan-400 w-5"></i>
+            <span>Praktikum: Landing Page</span>
+          </div>
+        </button>
+
+        <button onclick="switchTab('sandbox')" id="nav-sandbox" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-terminal text-emerald-400 w-5"></i>
+            <span>CSS Live Code Sandbox</span>
+          </div>
+        </button>
+
+        <button onclick="switchTab('tugas')" id="nav-tugas" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center justify-between transition text-slate-300 hover:bg-slate-800/60">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-graduation-cap text-rose-400 w-5"></i>
+            <span>Tugas Mandiri & Evaluasi</span>
+          </div>
+        </button>
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-xs">
+            GI
+          </div>
+          <div class="overflow-hidden">
+            <p class="text-xs font-semibold text-slate-200 truncate">Tiara Muro Afil A.R</p>
+            <p class="text-[11px] text-slate-400 truncate">Project-Based Learning</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Overlay backdrop for mobile -->
+    <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-10 hidden lg:hidden"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-slate-950 p-4 lg:p-8 relative">
+
+      <!-- ================= ROADMAP CONTENT ================= -->
+      <section id="tab-roadmap" class="tab-content max-w-4xl mx-auto space-y-8">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-900/40 via-purple-900/30 to-slate-900 p-6 md:p-10 border border-indigo-500/20 shadow-2xl">
+          <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 mb-4">
+            <i class="fa-solid fa-rocket text-xs"></i> Modul Interaktif 2026
+          </span>
+          <h2 class="text-2xl md:text-4xl font-bold text-white mb-3">
+            Menguasai CSS dari Dasar hingga Proyek Web Mandiri 🚀
+          </h2>
+          <p class="text-slate-300 text-sm md:text-base leading-relaxed max-w-2xl">
+            Selamat datang para calon Web Developer hebat! CSS (<i>Cascading Style Sheets</i>) adalah "keajaiban" visual yang mengubah HTML polos menjadi tampilan web modern, estetik, dan responsif.
+          </p>
+        </div>
+
+        <!-- Interactive Roadmap Stepper -->
+        <div class="bg-slate-900/80 rounded-2xl p-6 border border-slate-800">
+          <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-route text-indigo-400"></i> Alur Pembelajaran (Roadmap)
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative">
+            <!-- Step 1 -->
+            <div onclick="switchTab('modul1')" class="cursor-pointer group bg-slate-800/60 hover:bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-indigo-500/50 transition">
+              <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-sm mb-3 group-hover:scale-110 transition">1</div>
+              <h4 class="font-semibold text-sm text-slate-100 group-hover:text-indigo-300">Fondasi CSS</h4>
+              <p class="text-xs text-slate-400 mt-1">Sintaks, 3 cara hubung, Selector</p>
+            </div>
+            <!-- Step 2 -->
+            <div onclick="switchTab('modul2')" class="cursor-pointer group bg-slate-800/60 hover:bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-indigo-500/50 transition">
+              <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm mb-3 group-hover:scale-110 transition">2</div>
+              <h4 class="font-semibold text-sm text-slate-100 group-hover:text-purple-300">Visual & Box Model</h4>
+              <p class="text-xs text-slate-400 mt-1">Warna, Tipografi, Box Model</p>
+            </div>
+            <!-- Step 3 -->
+            <div onclick="switchTab('modul3')" class="cursor-pointer group bg-slate-800/60 hover:bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-indigo-500/50 transition">
+              <div class="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold text-sm mb-3 group-hover:scale-110 transition">3</div>
+              <h4 class="font-semibold text-sm text-slate-100 group-hover:text-cyan-300">Flexbox & Grid</h4>
+              <p class="text-xs text-slate-400 mt-1">Layout 1D & 2D modern</p>
+            </div>
+            <!-- Step 4 -->
+            <div onclick="switchTab('modul4')" class="cursor-pointer group bg-slate-800/60 hover:bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-indigo-500/50 transition">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm mb-3 group-hover:scale-110 transition">4</div>
+              <h4 class="font-semibold text-sm text-slate-100 group-hover:text-emerald-300">Responsif & Animasi</h4>
+              <p class="text-xs text-slate-400 mt-1">Media Queries, Transitions</p>
+            </div>
+            <!-- Step 5 -->
+            <div onclick="switchTab('praktikum')" class="cursor-pointer group bg-slate-800/60 hover:bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-indigo-500/50 transition">
+              <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm mb-3 group-hover:scale-110 transition">5</div>
+              <h4 class="font-semibold text-sm text-slate-100 group-hover:text-amber-300">Proyek Mandiri</h4>
+              <p class="text-xs text-slate-400 mt-1">Praktikum Landing Page</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end">
+          <button onclick="switchTab('modul1')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+            <span>Mulai Pembelajaran Modul 1</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= MODUL 1 CONTENT ================= -->
+      <section id="tab-modul1" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider">Modul 1</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Fondasi CSS (Pengenalan & Sintaks)</h2>
+        </div>
+
+        <!-- Concept Card -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-circle-info"></i> 1. Apa itu CSS?
+          </h3>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Jika HTML adalah <strong class="text-emerald-400">struktur & tulang</strong> dari sebuah rumah, maka CSS adalah <strong class="text-indigo-400">cat, dekorasi, furnitur, dan tata letak</strong> yang membuat rumah tersebut indah dipandang dan nyaman dihuni.
+          </p>
+        </div>
+
+        <!-- 3 Ways to Apply CSS -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-6">
+          <h3 class="text-lg font-bold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-code"></i> 2. Tiga Cara Menghubungkan CSS ke HTML
+          </h3>
+
+          <!-- Inline -->
+          <div class="space-y-2">
+            <h4 class="font-semibold text-sm text-slate-200">a. Inline CSS (Langsung di Tag HTML)</h4>
+            <div class="relative bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-indigo-300 overflow-x-auto">
+              <code>&lt;h1 style="color: blue; text-align: center;"&gt;Halo Dunia!&lt;/h1&gt;</code>
+            </div>
+            <p class="text-xs text-amber-400/90 italic"><i class="fa-solid fa-triangle-exclamation"></i> Catatan Guru: Kurang disarankan untuk proyek besar karena membuat HTML berantakan.</p>
+          </div>
+
+          <!-- Internal -->
+          <div class="space-y-2">
+            <h4 class="font-semibold text-sm text-slate-200">b. Internal CSS (Di dalam tag &lt;style&gt;)</h4>
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-indigo-300 overflow-x-auto">
+              <pre>&lt;head&gt;
+  &lt;style&gt;
+    h1 {
+      color: blue;
+      text-align: center;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;</pre>
+            </div>
+          </div>
+
+          <!-- External -->
+          <div class="space-y-2">
+            <h4 class="font-semibold text-sm text-slate-200">c. External CSS (File Terpisah - <span class="text-emerald-400">Sangat Direkomendasikan</span>)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs">
+                <span class="text-slate-500 block mb-2">// index.html</span>
+                <code class="text-sky-300">&lt;head&gt;<br>&nbsp;&lt;link rel="stylesheet" href="style.css"&gt;<br>&lt;/head&gt;</code>
+              </div>
+              <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs">
+                <span class="text-slate-500 block mb-2">/* style.css */</span>
+                <code class="text-indigo-300">h1 {<br>&nbsp;&nbsp;color: #2c3e50;<br>&nbsp;&nbsp;text-align: center;<br>}</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Syntax & Selectors -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-bullseye"></i> 3. Anatomi Sintaks & Selector CSS
+          </h3>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300">
+            <span class="text-slate-500">/* Selector { Property: Value; } */</span><br>
+            <span class="text-amber-300">p</span> {<br>
+            &nbsp;&nbsp;<span class="text-sky-300">color</span>: <span class="text-emerald-300">red</span>; <span class="text-slate-500">/* Mengubah warna teks */</span><br>
+            &nbsp;&nbsp;<span class="text-sky-300">font-size</span>: <span class="text-emerald-300">16px</span>; <span class="text-slate-500">/* Mengubah ukuran font */</span><br>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+              <h4 class="font-bold text-sm text-amber-300 mb-1">Element Selector</h4>
+              <p class="text-xs text-slate-300">Target langsung nama tag (misal: <code class="text-indigo-300">h1</code>, <code class="text-indigo-300">p</code>, <code class="text-indigo-300">div</code>).</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+              <h4 class="font-bold text-sm text-sky-300 mb-1">Class Selector (.)</h4>
+              <p class="text-xs text-slate-300">Target elemen dengan class tertentu (misal: <code class="text-indigo-300">.btn-primary</code>). Dapat dipakai berulang.</p>
+            </div>
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
+              <h4 class="font-bold text-sm text-emerald-300 mb-1">ID Selector (#)</h4>
+              <p class="text-xs text-slate-300">Target elemen unik dengan ID (misal: <code class="text-indigo-300">#header-main</code>). Hanya untuk 1 elemen.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Quiz Modul 1 -->
+        <div class="bg-indigo-950/40 rounded-2xl p-6 border border-indigo-500/30 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold text-indigo-200 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-question text-indigo-400"></i> Kuis Interaktif Modul 1
+            </h3>
+            <span class="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-full font-medium">3 Pertanyaan</span>
+          </div>
+
+          <div id="quiz1Container" class="space-y-6">
+            <!-- Q1 -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2">
+              <p class="text-sm font-medium text-slate-200">1. Apa fungsi utama CSS dalam pembuatan web?</p>
+              <div class="space-y-1.5 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_1" value="a" class="accent-indigo-500">
+                  <span>Membuat database dan logika server</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_1" value="b" class="accent-indigo-500">
+                  <span>Mengatur tampilan visual, layout, dan gaya halaman web</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_1" value="c" class="accent-indigo-500">
+                  <span>Membuat domain dan hosting web</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-2">
+              <p class="text-sm font-medium text-slate-200">2. Tag HTML apa yang digunakan untuk menyambungkan file External CSS?</p>
+              <div class="space-y-1.5 text-xs">
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_2" value="a" class="accent-indigo-500">
+                  <span>&lt;script href="style.css"&gt;</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_2" value="b" class="accent-indigo-500">
+                  <span>&lt;link rel="stylesheet" href="style.css"&gt;</span>
+                </label>
+                <label class="flex items-center gap-2 p-2 rounded-lg bg-slate-800/50 hover:bg-slate-800 cursor-pointer">
+                  <input type="radio" name="q1_2" value="c" class="accent-indigo-500">
+                  <span>&lt;style src="style.css"&gt;</span>
+                </label>
+              </div>
+            </div>
+
+            <button onclick="checkQuiz1()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+              Periksa Jawaban Kuis 1
+            </button>
+            <div id="quiz1Feedback" class="hidden text-xs p-3 rounded-xl"></div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between pt-4">
+          <button onclick="switchTab('roadmap')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-5 py-2.5 rounded-xl text-xs transition">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+          </button>
+
+          <button onclick="completeAndNext('modul1', 'modul2')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+            <span>Selesai & Lanjut Modul 2</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= MODUL 2 CONTENT ================= -->
+      <section id="tab-modul2" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-purple-400 uppercase tracking-wider">Modul 2</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Pewarnaan, Tipografi, & Box Model</h2>
+        </div>
+
+        <!-- Colors & Typography -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+            <h3 class="text-base font-bold text-purple-300 flex items-center gap-2">
+              <i class="fa-solid fa-palette"></i> Format Warna CSS
+            </h3>
+            <ul class="text-xs text-slate-300 space-y-2">
+              <li class="bg-slate-800/60 p-2.5 rounded-lg flex justify-between items-center">
+                <span>Nama Warna: <code class="text-rose-400">red</code>, <code class="text-teal-400">teal</code></span>
+                <span class="w-4 h-4 rounded-full bg-teal-500"></span>
+              </li>
+              <li class="bg-slate-800/60 p-2.5 rounded-lg flex justify-between items-center">
+                <span>HEX Code: <code class="text-indigo-400">#FF5733</code></span>
+                <span class="w-4 h-4 rounded-full bg-[#FF5733]"></span>
+              </li>
+              <li class="bg-slate-800/60 p-2.5 rounded-lg flex justify-between items-center">
+                <span>RGBA (Transparan): <code class="text-amber-400">rgba(79,70,229,0.8)</code></span>
+                <span class="w-4 h-4 rounded-full bg-[#4f46e5]/80"></span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+            <h3 class="text-base font-bold text-purple-300 flex items-center gap-2">
+              <i class="fa-solid fa-font"></i> Tipografi Modern
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Penggunaan Google Fonts untuk tampilan profesional:
+            </p>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-purple-300 overflow-x-auto">
+              <pre>@import url('https://fonts.googleapis.com/...');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+}</pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Box Model Section -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold text-purple-300 flex items-center gap-2">
+              <i class="fa-solid fa-box-open"></i> Konsep CSS Box Model (Sangat Penting! ⚠️)
+            </h3>
+            <button onclick="switchTab('visualizers')" class="text-xs bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-sliders"></i> Coba Interactive Lab
+            </button>
+          </div>
+
+          <!-- Box Diagram Visualizer Placeholder -->
+          <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col items-center">
+            <div class="w-full max-w-md bg-amber-500/20 border-2 border-dashed border-amber-500/60 p-4 rounded-xl text-center text-xs font-semibold text-amber-300 relative">
+              MARGIN (Ruang Luar)
+              <div class="bg-yellow-500/20 border-2 border-yellow-500/80 p-4 rounded-lg text-yellow-200 my-2 relative">
+                BORDER (Garis Tepi)
+                <div class="bg-emerald-500/20 border-2 border-emerald-500/80 p-4 rounded-md text-emerald-300 my-2 relative">
+                  PADDING (Ruang Dalam)
+                  <div class="bg-indigo-600 p-4 rounded text-white font-bold my-2 shadow">
+                    CONTENT (Teks/Gambar)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-800/50 p-3.5 rounded-xl text-xs space-y-1">
+              <span class="font-bold text-indigo-300 block">1. Content</span>
+              <p class="text-slate-300">Teks, gambar, atau konten utama di dalam elemen.</p>
+            </div>
+            <div class="bg-slate-800/50 p-3.5 rounded-xl text-xs space-y-1">
+              <span class="font-bold text-emerald-300 block">2. Padding</span>
+              <p class="text-slate-300">Ruang kosong di antara Content dan Border.</p>
+            </div>
+            <div class="bg-slate-800/50 p-3.5 rounded-xl text-xs space-y-1">
+              <span class="font-bold text-yellow-300 block">3. Border</span>
+              <p class="text-slate-300">Garis pembatas tepi di sekeliling padding.</p>
+            </div>
+            <div class="bg-slate-800/50 p-3.5 rounded-xl text-xs space-y-1">
+              <span class="font-bold text-amber-400 block">4. Margin</span>
+              <p class="text-slate-300">Jarak ruang kosong luar dengan elemen tetangga.</p>
+            </div>
+          </div>
+
+          <!-- Box Sizing Golden Trick -->
+          <div class="bg-gradient-to-r from-amber-500/10 to-indigo-500/10 border border-amber-500/30 p-4 rounded-xl">
+            <h4 class="font-bold text-xs text-amber-300 mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-key"></i> Trik Emas Box-Sizing
+            </h4>
+            <div class="bg-slate-950 p-3 rounded-lg font-mono text-xs text-indigo-300 my-2">
+              * { box-sizing: border-box; margin: 0; padding: 0; }
+            </div>
+            <p class="text-xs text-slate-300">
+              Penggunaan <code class="text-amber-300">border-box</code> memastikan ukuran total elemen tidak membengkak saat diberi padding dan border.
+            </p>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between pt-4">
+          <button onclick="switchTab('modul1')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-5 py-2.5 rounded-xl text-xs transition">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Modul 1
+          </button>
+
+          <button onclick="completeAndNext('modul2', 'modul3')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+            <span>Selesai & Lanjut Modul 3</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= MODUL 3 CONTENT ================= -->
+      <section id="tab-modul3" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Modul 3</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Tata Letak Modern (Flexbox & Grid)</h2>
+        </div>
+
+        <!-- Flexbox vs Grid Comparison -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Flexbox -->
+          <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2">
+                  <i class="fa-solid fa-arrows-left-right"></i> CSS Flexbox
+                </h3>
+                <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-2.5 py-1 rounded-full font-semibold">1 Dimensi</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-4">
+                Sangat cocok untuk komponen satu baris/kolom seperti navigasi, deretan kartu, atau penyelarasan di tengah.
+              </p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">
+                <pre>.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}</pre>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex gap-2 justify-center">
+              <div class="w-10 h-10 bg-cyan-600 rounded flex items-center justify-center font-bold text-xs text-white">1</div>
+              <div class="w-10 h-10 bg-cyan-600 rounded flex items-center justify-center font-bold text-xs text-white">2</div>
+              <div class="w-10 h-10 bg-cyan-600 rounded flex items-center justify-center font-bold text-xs text-white">3</div>
+            </div>
+          </div>
+
+          <!-- Grid -->
+          <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-indigo-300 flex items-center gap-2">
+                  <i class="fa-solid fa-table-cells"></i> CSS Grid
+                </h3>
+                <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2.5 py-1 rounded-full font-semibold">2 Dimensi</span>
+              </div>
+              <p class="text-xs text-slate-300 mb-4">
+                Sangat cocok untuk tata letak halaman web penuh (baris DAN kolom sekaligus) atau galeri foto kompleks.
+              </p>
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-xs text-indigo-300 overflow-x-auto">
+                <pre>.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}</pre>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 grid grid-cols-3 gap-2">
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">1</div>
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">2</div>
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">3</div>
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">4</div>
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">5</div>
+              <div class="h-8 bg-indigo-600 rounded flex items-center justify-center font-bold text-xs text-white">6</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between pt-4">
+          <button onclick="switchTab('modul2')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-5 py-2.5 rounded-xl text-xs transition">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Modul 2
+          </button>
+
+          <button onclick="completeAndNext('modul3', 'modul4')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+            <span>Selesai & Lanjut Modul 4</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= MODUL 4 CONTENT ================= -->
+      <section id="tab-modul4" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Modul 4</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Desain Responsif & Interaktivitas</h2>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-emerald-300 flex items-center gap-2">
+            <i class="fa-solid fa-display"></i> 1. Media Queries (Web Responsif Mobile)
+          </h3>
+          <p class="text-xs text-slate-300">
+            Media Queries memungkinkan kita mengubah gaya tampilan berdasarkan ukuran layar perangkat pengguna (Smartphone vs Desktop).
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-emerald-300 overflow-x-auto">
+            <pre><span class="text-slate-500">/* Desktop Default */</span>
+.card-container { display: flex; }
+
+<span class="text-slate-500">/* Mobile Screen (Lebar <= 768px) */</span>
+@media (max-width: 768px) {
+  .card-container {
+    flex-direction: column;
+  }
+}</pre>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-emerald-300 flex items-center gap-2">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> 2. Transisi & Efek Hover
+          </h3>
+          <p class="text-xs text-slate-300">
+            Efek transisi memberikan kehalusan animasi saat pengguna berinteraksi dengan elemen.
+          </p>
+
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-300 overflow-x-auto">
+            <pre>.btn {
+  background-color: #3498db;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-3px);
+}</pre>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between pt-4">
+          <button onclick="switchTab('modul3')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-5 py-2.5 rounded-xl text-xs transition">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Modul 3
+          </button>
+
+          <button onclick="completeAndNext('modul4', 'visualizers')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30 flex items-center gap-2">
+            <span>Masuk ke Laboratorium Interaktif</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= INTERACTIVE LAB / VISUALIZERS ================= -->
+      <section id="tab-visualizers" class="tab-content hidden max-w-5xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider">Laboratorium Interaktif</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Simulator Box Model & Flexbox Live</h2>
+        </div>
+
+        <!-- Box Model Simulator -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-6">
+          <h3 class="text-lg font-bold text-amber-300 flex items-center gap-2">
+            <i class="fa-solid fa-box"></i> Simulator Box Model
+          </h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <!-- Controls -->
+            <div class="space-y-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                  <span>Padding: <strong id="valPadding" class="text-emerald-400">20px</strong></span>
+                </div>
+                <input type="range" id="inputPadding" min="0" max="60" value="20" oninput="updateBoxModel()" class="w-full accent-emerald-500">
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                  <span>Margin: <strong id="valMargin" class="text-amber-400">15px</strong></span>
+                </div>
+                <input type="range" id="inputMargin" min="0" max="50" value="15" oninput="updateBoxModel()" class="w-full accent-amber-500">
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                  <span>Border Width: <strong id="valBorder" class="text-purple-400">4px</strong></span>
+                </div>
+                <input type="range" id="inputBorder" min="0" max="20" value="4" oninput="updateBoxModel()" class="w-full accent-purple-500">
+              </div>
+
+              <div class="flex items-center gap-2 pt-2">
+                <input type="checkbox" id="inputBoxSizing" checked onchange="updateBoxModel()" class="w-4 h-4 accent-indigo-600 rounded">
+                <label for="inputBoxSizing" class="text-xs text-slate-200 cursor-pointer font-medium">Gunakan <code class="text-indigo-300">box-sizing: border-box</code></label>
+              </div>
+            </div>
+
+            <!-- Preview Display -->
+            <div class="flex flex-col items-center justify-center p-4 bg-slate-950 rounded-xl border border-slate-800 min-h-[220px]">
+              <div id="simMarginBox" class="bg-amber-500/20 border-2 border-dashed border-amber-500 transition-all p-2 rounded-xl text-center">
+                <span class="text-[10px] text-amber-300 font-mono block mb-1">Margin</span>
+                <div id="simBorderBox" class="bg-purple-500/30 border-purple-500 transition-all p-2 rounded-lg">
+                  <span class="text-[10px] text-purple-300 font-mono block mb-1">Border</span>
+                  <div id="simPaddingBox" class="bg-emerald-500/30 transition-all p-2 rounded-md">
+                    <span class="text-[10px] text-emerald-300 font-mono block mb-1">Padding</span>
+                    <div class="bg-indigo-600 text-white font-bold text-xs py-3 px-6 rounded shadow">
+                      CONTENT
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flexbox Simulator -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-6">
+          <h3 class="text-lg font-bold text-cyan-300 flex items-center gap-2">
+            <i class="fa-solid fa-cubes-stacked"></i> Simulator Flexbox Layout
+          </h3>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="space-y-1">
+              <label class="text-xs text-slate-300 font-medium">flex-direction:</label>
+              <select id="flexDir" onchange="updateFlexSim()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200">
+                <option value="row">row (Horisontal)</option>
+                <option value="column">column (Vertikal)</option>
+              </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs text-slate-300 font-medium">justify-content:</label>
+              <select id="flexJustify" onchange="updateFlexSim()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200">
+                <option value="center">center</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="space-between">space-between</option>
+                <option value="space-around">space-around</option>
+              </select>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs text-slate-300 font-medium">align-items:</label>
+              <select id="flexAlign" onchange="updateFlexSim()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200">
+                <option value="center">center</option>
+                <option value="flex-start">flex-start</option>
+                <option value="flex-end">flex-end</option>
+                <option value="stretch">stretch</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Flexbox Screen Preview -->
+          <div id="flexContainerSim" class="bg-slate-950 border border-slate-800 rounded-xl p-4 h-48 flex gap-3 transition-all">
+            <div class="w-12 h-12 bg-indigo-600 text-white font-bold text-sm rounded-lg flex items-center justify-center shadow">1</div>
+            <div class="w-12 h-12 bg-purple-600 text-white font-bold text-sm rounded-lg flex items-center justify-center shadow">2</div>
+            <div class="w-12 h-12 bg-cyan-600 text-white font-bold text-sm rounded-lg flex items-center justify-center shadow">3</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PRAKTIKUM CONTENT ================= -->
+      <section id="tab-praktikum" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5 flex justify-between items-end">
+          <div>
+            <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Praktikum Utama</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Membuat Landing Page Profil Diri</h2>
+          </div>
+          <button onclick="loadPraktikumToSandbox()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 transition shadow-lg shadow-cyan-600/20">
+            <i class="fa-solid fa-play"></i> Buka di Live Code Editor
+          </button>
+        </div>
+
+        <!-- HTML Code Box -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-brands fa-html5 text-orange-400"></i> Langkah 1: Struktur Kode HTML (<code class="text-indigo-300">index.html</code>)
+            </h3>
+            <button onclick="copyText('htmlPraktikumCode')" class="text-xs text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i> Salin</button>
+          </div>
+          <textarea id="htmlPraktikumCode" readonly class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-sky-300 h-48 focus:outline-none">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portofolio Saya</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="logo">DevPortfolio</div>
+    <ul class="nav-links">
+      <li><a href="#">Beranda</a></li>
+      <li><a href="#">Keahlian</a></li>
+      <li><a href="#">Kontak</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>Halo, Saya <span class="highlight">Budi Santoso</span> 👋</h1>
+    <p>Junior Web Developer yang antusias menciptakan web modern dan responsif.</p>
+    <a href="#" class="btn">Hubungi Saya</a>
+  </section>
+</body>
+</html></textarea>
+        </div>
+
+        <!-- CSS Code Box -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+              <i class="fa-brands fa-css3-alt text-indigo-400"></i> Langkah 2: Styling CSS Eksternal (<code class="text-indigo-300">style.css</code>)
+            </h3>
+            <button onclick="copyText('cssPraktikumCode')" class="text-xs text-slate-400 hover:text-white"><i class="fa-regular fa-copy"></i> Salin</button>
+          </div>
+          <textarea id="cssPraktikumCode" readonly class="w-full bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-indigo-300 h-56 focus:outline-none">
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #4f46e5;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 15px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.hero {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+}
+
+.highlight { color: #4f46e5; }
+
+.btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 24px;
+  background-color: #4f46e5;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}</textarea>
+        </div>
+      </section>
+
+      <!-- ================= LIVE CODE SANDBOX ================= -->
+      <section id="tab-sandbox" class="tab-content hidden h-full flex flex-col space-y-4">
+        <div class="flex items-center justify-between shrink-0">
+          <div>
+            <h2 class="text-xl font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-code text-emerald-400"></i> CSS Live Code Sandbox
+            </h2>
+            <p class="text-xs text-slate-400">Edit HTML dan CSS di bawah ini untuk melihat hasil live secara instan!</p>
+          </div>
+          <button onclick="runSandboxCode()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center gap-2 transition shadow-lg shadow-emerald-600/20">
+            <i class="fa-solid fa-play"></i> Jalankan Preview
+          </button>
+        </div>
+
+        <!-- Editor & Preview Split Panel -->
+        <div class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 min-h-[450px]">
+          <!-- Left: Code Editors -->
+          <div class="flex flex-col gap-3">
+            <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+              <div class="bg-slate-950 px-4 py-2 border-b border-slate-800 text-xs font-bold text-slate-300 flex items-center gap-2">
+                <i class="fa-brands fa-html5 text-orange-400"></i> Editor HTML
+              </div>
+              <textarea id="sandboxHtml" oninput="runSandboxCode()" class="flex-1 bg-slate-950 p-3 font-mono text-xs text-sky-300 focus:outline-none resize-none code-editor" spellcheck="false">&lt;div class="card"&gt;
+  &lt;h2&gt;Halo CSS Interaktif! 👋&lt;/h2&gt;
+  &lt;p&gt;Cobalah ubah style CSS di sebelah kanan atau bawah!&lt;/p&gt;
+  &lt;button class="btn"&gt;Tombol Keren&lt;/button&gt;
+&lt;/div&gt;</textarea>
+            </div>
+
+            <div class="flex-1 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden">
+              <div class="bg-slate-950 px-4 py-2 border-b border-slate-800 text-xs font-bold text-slate-300 flex items-center gap-2">
+                <i class="fa-brands fa-css3-alt text-indigo-400"></i> Editor CSS
+              </div>
+              <textarea id="sandboxCss" oninput="runSandboxCode()" class="flex-1 bg-slate-950 p-3 font-mono text-xs text-indigo-300 focus:outline-none resize-none code-editor" spellcheck="false">body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 320px;
+}
+
+h2 {
+  color: #4f46e5;
+  margin-top: 0;
+}
+
+p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.btn {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #4338ca;
+  transform: scale(1.05);
+}</textarea>
+            </div>
+          </div>
+
+          <!-- Right: Live Preview Frame -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col">
+            <div class="bg-slate-950 px-4 py-2 border-b border-slate-800 text-xs font-bold text-slate-300 flex items-center justify-between">
+              <span class="flex items-center gap-2"><i class="fa-solid fa-desktop text-emerald-400"></i> Live Preview</span>
+              <span class="text-[10px] text-slate-500">Auto-Update</span>
+            </div>
+            <iframe id="sandboxPreview" class="w-full flex-1 bg-white border-0"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TUGAS MANDIRI & REFLEKSI ================= -->
+      <section id="tab-tugas" class="tab-content hidden max-w-4xl mx-auto space-y-8">
+        <div class="border-b border-slate-800 pb-5">
+          <span class="text-xs font-semibold text-rose-400 uppercase tracking-wider">Evaluasi Akhir</span>
+          <h2 class="text-2xl md:text-3xl font-bold text-white mt-1">Tugas Mandiri & Refleksi Diri</h2>
+        </div>
+
+        <!-- Task Prompt -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-rose-300 flex items-center gap-2">
+            <i class="fa-solid fa-list-check"></i> Deskripsi Tugas Mandiri: Linktree Clone
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Buatlah halaman web bertema <strong>"Linktree Clone / Portofolio Tautan Pribadi"</strong> milikmu sendiri dengan kriteria:
+          </p>
+          <ul class="list-disc list-inside text-xs text-slate-300 space-y-1.5 pl-2">
+            <li>Menggunakan External CSS.</li>
+            <li>Memanfaatkan Box Model (<code class="text-indigo-300">margin</code>, <code class="text-indigo-300">padding</code>, <code class="text-indigo-300">border-radius</code>).</li>
+            <li>Menerapkan Flexbox untuk posisi tengah.</li>
+            <li>Memiliki foto profil melingkar dan efek hover tombol.</li>
+            <li>Tampilan responsif di Smartphone.</li>
+          </ul>
+        </div>
+
+        <!-- Self Reflection Form -->
+        <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square"></i> Lembar Refleksi Diri Siswa
+          </h3>
+
+          <div class="space-y-4">
+            <div>
+              <label class="text-xs text-slate-300 font-medium block mb-1.5">1. Konsep CSS apa yang paling kamu sukai dan paling mudah dipahami?</label>
+              <textarea id="ref1" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Tuliskan jawabanmu di sini..."></textarea>
+            </div>
+
+            <div>
+              <label class="text-xs text-slate-300 font-medium block mb-1.5">2. Bagian mana yang menurutmu paling menantang?</label>
+              <textarea id="ref2" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Tuliskan jawabanmu di sini..."></textarea>
+            </div>
+
+            <button onclick="submitReflection()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
+              Simpan Lembar Refleksi
+            </button>
+            <p id="refFeedback" class="hidden text-xs text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> Refleksi berhasil disimpan!</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // State Tracking
+    const completedModules = {
+      modul1: false,
+      modul2: false,
+      modul3: false,
+      modul4: false
+    };
+
+    // Sidebar Mobile Toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function openMobileSidebar() {
+      sidebar.classList.remove('-translate-x-full');
+      sidebarBackdrop.classList.remove('hidden');
+    }
+
+    function closeMobileSidebar() {
+      sidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('hidden');
+    }
+
+    mobileMenuBtn?.addEventListener('click', openMobileSidebar);
+    closeSidebarBtn?.addEventListener('click', closeMobileSidebar);
+    sidebarBackdrop?.addEventListener('click', closeMobileSidebar);
+
+    // Tab Switching Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+
+      const selectedTab = document.getElementById(`tab-${tabId}`);
+      if (selectedTab) {
+        selectedTab.classList.remove('hidden');
+      }
+
+      // Sidebar button highlighting
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600/20', 'text-indigo-300', 'border', 'border-indigo-500/30');
+        btn.classList.add('text-slate-300');
+      });
+
+      const activeNav = document.getElementById(`nav-${tabId}`);
+      if (activeNav) {
+        activeNav.classList.add('bg-indigo-600/20', 'text-indigo-300', 'border', 'border-indigo-500/30');
+        activeNav.classList.remove('text-slate-300');
+      }
+
+      closeMobileSidebar();
+
+      if (tabId === 'sandbox') {
+        runSandboxCode();
+      }
+    }
+
+    // Progress Bar Updates
+    function updateProgress() {
+      const total = Object.keys(completedModules).length;
+      const count = Object.values(completedModules).filter(Boolean).length;
+      const percent = Math.round((count / total) * 100);
+
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+
+      if (progressBar && progressText) {
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${percent}%`;
+      }
+    }
+
+    function completeAndNext(currentMod, nextTab) {
+      completedModules[currentMod] = true;
+      const badge = document.getElementById(`badge-${currentMod}`);
+      if (badge) {
+        badge.className = 'w-2 h-2 rounded-full bg-emerald-400';
+      }
+      updateProgress();
+      switchTab(nextTab);
+    }
+
+    // Quiz 1 Checking
+    function checkQuiz1() {
+      const q1 = document.querySelector('input[name="q1_1"]:checked')?.value;
+      const q2 = document.querySelector('input[name="q1_2"]:checked')?.value;
+      const fb = document.getElementById('quiz1Feedback');
+
+      if (!q1 || !q2) {
+        fb.className = 'text-xs p-3 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        fb.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Harap jawab semua pertanyaan terlebih dahulu!';
+        fb.classList.remove('hidden');
+        return;
+      }
+
+      if (q1 === 'b' && q2 === 'b') {
+        fb.className = 'text-xs p-3 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        fb.innerHTML = '<i class="fa-solid fa-circle-check"></i> <strong>Sempurna!</strong> Semua jawaban kamu benar! 🎉';
+      } else {
+        fb.className = 'text-xs p-3 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        fb.innerHTML = '<i class="fa-solid fa-lightbulb"></i> Ada jawaban yang belum tepat. Coba periksa kembali materi Modul 1!';
+      }
+      fb.classList.remove('hidden');
+    }
+
+    // Interactive Box Model Simulator Logic
+    function updateBoxModel() {
+      const p = document.getElementById('inputPadding').value;
+      const m = document.getElementById('inputMargin').value;
+      const b = document.getElementById('inputBorder').value;
+      const bs = document.getElementById('inputBoxSizing').checked;
+
+      document.getElementById('valPadding').textContent = `${p}px`;
+      document.getElementById('valMargin').textContent = `${m}px`;
+      document.getElementById('valBorder').textContent = `${b}px`;
+
+      const simPadding = document.getElementById('simPaddingBox');
+      const simMargin = document.getElementById('simMarginBox');
+      const simBorder = document.getElementById('simBorderBox');
+
+      if (simPadding) simPadding.style.padding = `${p / 2}px`;
+      if (simMargin) simMargin.style.padding = `${m / 2}px`;
+      if (simBorder) simBorder.style.borderWidth = `${b}px`;
+    }
+
+    // Interactive Flexbox Simulator Logic
+    function updateFlexSim() {
+      const dir = document.getElementById('flexDir').value;
+      const justify = document.getElementById('flexJustify').value;
+      const align = document.getElementById('flexAlign').value;
+
+      const container = document.getElementById('flexContainerSim');
+      if (container) {
+        container.style.flexDirection = dir;
+        container.style.justifyContent = justify;
+        container.style.alignItems = align;
+      }
+    }
+
+    // Live Sandbox Execution
+    function runSandboxCode() {
+      const html = document.getElementById('sandboxHtml').value;
+      const css = document.getElementById('sandboxCss').value;
+      const iframe = document.getElementById('sandboxPreview');
+
+      if (iframe) {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <style>${css}</style>
+            </head>
+            <body>${html}</body>
+          </html>
+        `);
+        doc.close();
+      }
+    }
+
+    // Load Praktikum to Sandbox
+    function loadPraktikumToSandbox() {
+      const htmlCode = document.getElementById('htmlPraktikumCode').value;
+      const cssCode = document.getElementById('cssPraktikumCode').value;
+
+      document.getElementById('sandboxHtml').value = htmlCode;
+      document.getElementById('sandboxCss').value = cssCode;
+
+      switchTab('sandbox');
+    }
+
+    // Helper Copy Text
+    function copyText(elementId) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.select();
+        document.execCommand('copy');
+      }
+    }
+
+    // Reflection Submission
+    function submitReflection() {
+      const fb = document.getElementById('refFeedback');
+      if (fb) {
+        fb.classList.remove('hidden');
+        setTimeout(() => fb.classList.add('hidden'), 3000);
+      }
+    }
+
+    // Initialize Simulator defaults
+    window.onload = function() {
+      updateBoxModel();
+      updateFlexSim();
+      runSandboxCode();
+    };
+  </script>
+</body>
+</html>
