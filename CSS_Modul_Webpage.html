@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Interaktif: Dasar-dasar CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate Gray and Emerald Green -->
+    <!-- Application Structure Plan: A tab-based single-page application. Each tab corresponds to a 'Kegiatan' from the module. This structure allows non-linear learning, letting students jump between concepts. The core of the application is interactivity: live code editors, visual sliders for the Box Model, and a Flexbox playground. This was chosen to transform passive reading into active, hands-on learning, which is far more effective for mastering CSS concepts. -->
+    <!-- Visualization & Content Choices: 
+        - Kegiatan 1 (Intro): Goal: Demonstrate CSS impact. Method: Side-by-side HTML view with a toggle button to apply/remove styles. Interaction: Button click. Justification: Provides immediate, high-impact visual feedback on the purpose of CSS. Library: Vanilla JS.
+        - Kegiatan 2 (Selectors): Goal: Practice selectors. Method: A live code editor where users type CSS and see the result update in real-time on a sample HTML structure. Interaction: Live typing. Justification: Encourages experimentation and reinforces the link between code and visual output. Library: Vanilla JS.
+        - Kegiatan 3 (Box Model): Goal: Visualize an abstract concept. Method: An interactive diagram built with divs, controlled by sliders for padding, border, and margin. Interaction: Range sliders. Justification: Makes the abstract Box Model tangible and easy to understand. Library: Vanilla JS, no chart libraries.
+        - Kegiatan 4 (Flexbox): Goal: Explore layout properties. Method: A 'Flexbox Playground' with buttons to change container properties like justify-content and align-items. Interaction: Button clicks. Justification: Allows for rapid, risk-free exploration of complex layout behaviors. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .tab-btn { transition: all 0.3s ease; }
+        .tab-btn.active { border-color: #10B981; color: #10B981; background-color: #ECFDF5; }
+        .tab-btn:not(.active):hover { border-color: #6B7280; color: #374151; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .interactive-area { border: 1px solid #D1D5DB; border-radius: 0.5rem; overflow: hidden; }
+        .control-panel label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #4B5563; }
+        .control-panel input[type="range"] { width: 100%; }
+        .flex-btn { transition: background-color 0.2s ease-in-out; }
+        .flex-btn.active { background-color: #10B981; color: white; }
+        .flex-btn:not(.active) { background-color: #F3F4F6; color: #374151; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-slate-900">Modul Interaktif: Dasar-dasar CSS</h1>
+            <p class="text-slate-600 mt-2">Sebuah panduan praktik untuk siswa SMK RPL Fase F</p>
+        </header>
+
+        <nav class="mb-8 border-b border-slate-200">
+            <div class="flex flex-wrap -mb-px justify-center gap-2 md:gap-4">
+                <button class="tab-btn text-sm md:text-base font-semibold p-3 md:p-4 border-b-2 border-transparent rounded-t-lg" data-tab="1">1. Pengenalan</button>
+                <button class="tab-btn text-sm md:text-base font-semibold p-3 md:p-4 border-b-2 border-transparent rounded-t-lg" data-tab="2">2. Selector</button>
+                <button class="tab-btn text-sm md:text-base font-semibold p-3 md:p-4 border-b-2 border-transparent rounded-t-lg" data-tab="3">3. Box Model</button>
+                <button class="tab-btn text-sm md:text-base font-semibold p-3 md:p-4 border-b-2 border-transparent rounded-t-lg" data-tab="4">4. Flexbox</button>
+            </div>
+        </nav>
+
+        <main>
+            <!-- Kegiatan 1: Pengenalan -->
+            <section id="tab-1" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold mb-3 text-emerald-600">Pengenalan CSS</h2>
+                    <p class="mb-4 text-slate-600">Selamat datang di kegiatan pertama! Di sini, Anda akan melihat secara langsung kekuatan CSS. Jika HTML adalah kerangka sebuah rumah, maka CSS adalah cat, dekorasi, dan penataan furnitur yang membuatnya indah. Coba klik tombol di bawah untuk melihat perbedaannya.</p>
+                    <div class="interactive-area grid md:grid-cols-2 gap-4 bg-slate-100 p-4">
+                        <div>
+                            <h3 class="font-bold mb-2">Tanpa CSS (HTML Murni)</h3>
+                            <div class="bg-white p-4 rounded h-full">
+                                <h1>Judul Utama</h1>
+                                <p>Ini adalah sebuah paragraf.</p>
+                                <button>Tombol</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-2">Dengan CSS</h3>
+                            <div id="demo-css" class="bg-white p-4 rounded h-full">
+                                <h1>Judul Utama</h1>
+                                <p>Ini adalah sebuah paragraf.</p>
+                                <button>Tombol</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button id="toggle-css-btn" class="bg-emerald-500 text-white font-bold py-2 px-4 rounded hover:bg-emerald-600 transition-colors">Terapkan / Hapus CSS</button>
+                    </div>
+                    <style id="demo-style-tag">
+                        #demo-css.styled h1 { color: #059669; font-size: 1.875rem; border-bottom: 2px solid #A7F3D0; padding-bottom: 0.5rem; }
+                        #demo-css.styled p { color: #4B5563; margin-top: 1rem; }
+                        #demo-css.styled button { background-color: #10B981; color: white; padding: 0.5rem 1rem; border: none; border-radius: 0.375rem; margin-top: 1rem; cursor: pointer; }
+                    </style>
+                </div>
+            </section>
+
+            <!-- Kegiatan 2: Selector -->
+            <section id="tab-2" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold mb-3 text-emerald-600">Selector & Properti Dasar</h2>
+                    <p class="mb-4 text-slate-600">Selector adalah cara kita "memilih" elemen HTML yang ingin diberi gaya. Coba praktikkan langsung di editor di bawah ini. Ubah kode CSS di sebelah kiri dan lihat hasilnya secara langsung di sebelah kanan. Ikuti petunjuk di dalam komentar untuk memulai.</p>
+                    <div class="interactive-area grid md:grid-cols-2 gap-px bg-slate-200">
+                        <div class="bg-gray-800 p-4">
+                            <label class="text-white font-bold text-sm mb-2 block">styles.css</label>
+                            <textarea id="css-editor" class="w-full h-80 bg-gray-900 text-white font-mono p-2 rounded-md border border-gray-700 resize-none">/* Selamat datang di editor CSS! */
+/* Coba ubah kode di bawah ini. */
+
+/* 1. Targetkan h1 dengan selector tipe */
+h1 {
+    color: #10B981;
+}
+
+/* 2. Targetkan item penting dengan selector ID */
+#item-penting {
+    font-weight: bold;
+    color: #EF4444;
+}
+
+/* 3. Targetkan item yang sudah dibeli dengan selector kelas */
+.sudah-beli {
+    text-decoration: line-through;
+    color: #6B7280;
+}
+
+/* 4. Tantangan: Buat list container punya background! */
+.list-container {
+    
+}
+</textarea>
+                        </div>
+                        <div class="bg-white p-4">
+                            <label class="text-slate-800 font-bold text-sm mb-2 block">Hasil Tampilan (index.html)</label>
+                            <iframe id="css-preview" class="w-full h-80 border-none"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kegiatan 3: Box Model -->
+            <section id="tab-3" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold mb-3 text-emerald-600">Memahami Box Model</h2>
+                    <p class="mb-4 text-slate-600">Setiap elemen di web adalah sebuah "kotak". Box Model adalah aturan yang mendefinisikan ruang di sekitar elemen. Gunakan slider di bawah untuk melihat bagaimana `padding`, `border`, dan `margin` memengaruhi sebuah elemen secara visual.</p>
+                    <div class="interactive-area grid md:grid-cols-3 gap-px bg-slate-200">
+                        <div class="md:col-span-2 bg-slate-100 p-4 flex items-center justify-center min-h-[300px]">
+                            <div id="box-margin" class="bg-amber-200/50 p-1">
+                                <div id="box-border" class="bg-sky-200/50 p-1">
+                                    <div id="box-padding" class="bg-emerald-200/50 p-4">
+                                        <div id="box-content" class="bg-white p-4 text-center">Konten</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-panel bg-white p-4">
+                            <h3 class="font-bold mb-4 text-lg">Kontrol Box Model</h3>
+                            <div class="mb-4">
+                                <label for="padding-slider">Padding: <span id="padding-value">16</span>px</label>
+                                <input type="range" id="padding-slider" min="0" max="50" value="16">
+                            </div>
+                            <div class="mb-4">
+                                <label for="border-slider">Border: <span id="border-value">4</span>px</label>
+                                <input type="range" id="border-slider" min="0" max="20" value="4">
+                            </div>
+                            <div>
+                                <label for="margin-slider">Margin: <span id="margin-value">4</span>px</label>
+                                <input type="range" id="margin-slider" min="0" max="50" value="4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kegiatan 4: Flexbox -->
+            <section id="tab-4" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h2 class="text-2xl font-bold mb-3 text-emerald-600">Studi Kasus: Flexbox Playground</h2>
+                    <p class="mb-4 text-slate-600">Flexbox adalah cara modern untuk mengatur tata letak. Daripada hanya membaca teori, coba langsung propertinya di "playground" ini. Klik tombol di bawah untuk mengubah perataan dan distribusi item di dalam kontainer abu-abu.</p>
+                    <div class="interactive-area">
+                        <div id="flex-container" class="bg-slate-200 p-4 min-h-[250px] flex items-start justify-start rounded-t-lg">
+                            <div class="bg-emerald-500 text-white w-20 h-20 flex items-center justify-center rounded">1</div>
+                            <div class="bg-sky-500 text-white w-24 h-16 flex items-center justify-center rounded">2</div>
+                            <div class="bg-amber-500 text-white w-16 h-24 flex items-center justify-center rounded">3</div>
+                        </div>
+                         <div class="control-panel bg-white p-4 rounded-b-lg border-t border-slate-200">
+                            <div class="mb-4">
+                                <h4 class="font-semibold mb-2 text-slate-600">Justify Content (Sumbu Utama / Horizontal)</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="justify-content" data-val="justify-start">start</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="justify-content" data-val="justify-center">center</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="justify-content" data-val="justify-end">end</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="justify-content" data-val="justify-between">between</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="justify-content" data-val="justify-around">around</button>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-2 text-slate-600">Align Items (Sumbu Silang / Vertikal)</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="align-items" data-val="items-start">start</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="align-items" data-val="items-center">center</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="align-items" data-val="items-end">end</button>
+                                    <button class="flex-btn p-2 rounded text-sm" data-prop="align-items" data-val="items-stretch">stretch</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="text-center text-slate-500 text-sm mt-8 py-4">
+            <p>&copy; 2025 Hak Cipta oleh Tiara Muro Afil A.R</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const sections = document.querySelectorAll('.content-section');
+
+            function showTab(tabNumber) {
+                tabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.tab === tabNumber);
+                });
+                sections.forEach(section => {
+                    section.classList.toggle('active', section.id === `tab-${tabNumber}`);
+                });
+            }
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => showTab(tab.dataset.tab));
+            });
+
+            showTab('1');
+
+            // Kegiatan 1: Pengenalan
+            const toggleCssBtn = document.getElementById('toggle-css-btn');
+            const demoCssDiv = document.getElementById('demo-css');
+            toggleCssBtn.addEventListener('click', () => {
+                demoCssDiv.classList.toggle('styled');
+            });
+            demoCssDiv.classList.add('styled');
+
+            // Kegiatan 2: Selector
+            const cssEditor = document.getElementById('css-editor');
+            const cssPreview = document.getElementById('css-preview');
+            const htmlContent = `
+                <style> body { font-family: sans-serif; padding: 1rem; } </style>
+                <h1>Daftar Belanja</h1>
+                <ul class="list-container">
+                  <li id="item-penting">Beras (2 kg)</li>
+                  <li>Minyak Goreng (1 L)</li>
+                  <li class="sudah-beli">Telur (10 butir)</li>
+                  <li>Gula (1 kg)</li>
+                  <li class="sudah-beli">Kopi</li>
+                </ul>
+            `;
+
+            function updatePreview() {
+                const previewDoc = cssPreview.contentDocument || cssPreview.contentWindow.document;
+                previewDoc.open();
+                previewDoc.write(`
+                    <html>
+                        <head><style>${cssEditor.value}</style></head>
+                        <body>${htmlContent}</body>
+                    </html>
+                `);
+                previewDoc.close();
+            }
+            cssEditor.addEventListener('input', updatePreview);
+            updatePreview();
+
+            // Kegiatan 3: Box Model
+            const paddingSlider = document.getElementById('padding-slider');
+            const borderSlider = document.getElementById('border-slider');
+            const marginSlider = document.getElementById('margin-slider');
+            const paddingValue = document.getElementById('padding-value');
+            const borderValue = document.getElementById('border-value');
+            const marginValue = document.getElementById('margin-value');
+            const boxPadding = document.getElementById('box-padding');
+            const boxBorder = document.getElementById('box-border');
+            const boxMargin = document.getElementById('box-margin');
+
+            function updateBoxModel() {
+                const padding = paddingSlider.value;
+                const border = borderSlider.value;
+                const margin = marginSlider.value;
+
+                paddingValue.textContent = padding;
+                borderValue.textContent = border;
+                marginValue.textContent = margin;
+
+                boxPadding.style.padding = `${padding}px`;
+                boxBorder.style.padding = `${border}px`;
+                boxBorder.style.border = `${border}px solid #38bdf8`; // For visualization
+                boxMargin.style.padding = `${margin}px`;
+            }
+
+            paddingSlider.addEventListener('input', updateBoxModel);
+            borderSlider.addEventListener('input', updateBoxModel);
+            marginSlider.addEventListener('input', updateBoxModel);
+            updateBoxModel();
+
+            // Kegiatan 4: Flexbox
+            const flexContainer = document.getElementById('flex-container');
+            const flexButtons = document.querySelectorAll('.flex-btn');
+
+            const justifyClasses = ['justify-start', 'justify-center', 'justify-end', 'justify-between', 'justify-around'];
+            const alignClasses = ['items-start', 'items-center', 'items-end', 'items-stretch'];
+
+            flexButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const prop = button.dataset.prop;
+                    const val = button.dataset.val;
+                    
+                    let classesToRemove = prop === 'justify-content' ? justifyClasses : alignClasses;
+                    flexContainer.classList.remove(...classesToRemove);
+                    flexContainer.classList.add(val);
+
+                    document.querySelectorAll(`.flex-btn[data-prop="${prop}"]`).forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+            // Set initial active buttons
+            document.querySelector('.flex-btn[data-val="justify-start"]').classList.add('active');
+            document.querySelector('.flex-btn[data-val="items-start"]').classList.add('active');
+        });
+        
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        // --- SCRIPT TAMBAHAN UNTUK MENCEGAH VIEW-SOURCE ---
+        // Mencegah klik kanan untuk membuka menu konteks
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Mencegah shortcut keyboard Ctrl+U (dan Cmd+U di Mac)
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                e.preventDefault();
+            }
+        });
+        // --- AKHIR SCRIPT TAMBAHAN ---
+
+        // ... sisa kode untuk fungsionalitas tab dan lainnya
+    });
+    </script>
+</body>
+</html>
